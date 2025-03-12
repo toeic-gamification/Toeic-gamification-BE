@@ -1,8 +1,9 @@
 const app = require("./app");
-require("dotenv").config();
+const { sequelize } = require("./models");
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+sequelize.authenticate().then(() => {
+  console.log("MySQL Database connected");
+  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 });
