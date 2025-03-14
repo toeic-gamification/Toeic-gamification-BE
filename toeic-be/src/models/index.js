@@ -1,10 +1,24 @@
-const sequelize = require("../config/db");
 const User = require("./User");
+const Badge = require("./Badge");
+const LeaderBoard = require("./LeaderBoard");
+const Item = require("./Item");
+const Game = require("./Game");
+const Quest = require("./Quest");
+const Shop = require("./Shop");
+const Vocabulary = require("./Vocabulary");
+const Customization = require("./Customization");
 
-const db = { sequelize, User };
+User.belongsToMany(Badge, { through: "UserBadges" });
+Badge.belongsToMany(User, { through: "UserBadges" });
 
-db.sequelize.sync({ alter: true }) // Tự động cập nhật DB nếu có thay đổi
-  .then(() => console.log("Database synced"))
-  .catch(err => console.error("Database sync error:", err));
-
-module.exports = db;
+module.exports = {
+  User,
+  Badge,
+  LeaderBoard,
+  Item,
+  Game,
+  Quest,
+  Shop,
+  Vocabulary,
+  Customization
+};
