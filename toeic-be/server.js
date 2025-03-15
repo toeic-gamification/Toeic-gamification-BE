@@ -2,9 +2,9 @@ const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
-const sequelize = require("./config/db");
-const typeDefs = require("./graphql/typeDefs");
-const resolvers = require("./graphql/resolvers");
+const sequelize = require("./src/config/db");
+const typeDefs = require("./src/graphql/typeDefs");
+const resolvers = require("./src/graphql/resolvers");
 
 require("dotenv").config();
 
@@ -15,8 +15,12 @@ app.use(express.json());
 const getUser = (token) => {
   if (!token) return null;
   try {
+    if (!process.env.JWT_SECRET) {
+      throw new Error("Missing JWT_SECRET in environment variables");
+    }
     return jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
+    console.error("Lỗi xác thực JWT:", err.message);
     return null;
   }
 };
@@ -32,14 +36,23 @@ const server = new ApolloServer({
 });
 
 async function startServer() {
-  await server.start();
-  server.applyMiddleware({ app });
+  try {
+    await server.start();
+    server.applyMiddleware({ app });
 
-  app.listen(4000, async () => {
-    console.log(`🚀 Server chạy tại http://localhost:4000${server.graphqlPath}`);
-    await sequelize.sync();
-    console.log("✅ Database đã đồng bộ!");
-  });
+    await sequelize.sync().then(() => {
+      console.log("Database đã đồng bộ!");
+    });
+
+    app.listen(4000, () => {
+      console.log(
+        `🚀 Server chạy tại http://localhost:4000${server.graphqlPath}`
+      );
+    });
+  } catch (err) {
+    console.error("Lỗi khởi động server:", err.message);
+    process.exit(1);
+  }
 }
 
 startServer();
