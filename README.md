@@ -14,7 +14,7 @@ git checkout -b <ten-nhanh>
 ```
 Ví dụ:
 ```sh
-git checkout -b feature/user-authentication
+git checkout -b MyTrang
 ```
 
 ## 3. Cài Đặt Dependencies
