@@ -35,4 +35,4 @@ async function initializeSequelize() {
 
 initializeSequelize();
 
-module.exports = sequelize; // ✅ Đảm bảo module.exports đúng
+module.exports = sequelize;
