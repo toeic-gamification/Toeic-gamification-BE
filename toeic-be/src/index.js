@@ -1,18 +1,39 @@
-const { ApolloServer } = require("apollo-server");
-const dotenv = require("dotenv");
-const sequelize = require("../config/mysql");
-const connectMongoDB = require("../config/mongodb");
-const typeDefs = require("../graphql/schema");
-const resolvers = require("../graphql/resolvers");
-
-dotenv.config();
+require("dotenv").config();
+const express = require("express");
+const { ApolloServer } = require("apollo-server-express");
 
 // Kết nối CSDL
-connectMongoDB();
-sequelize.sync().then(() => console.log("✅ MySQL connected successfully"));
+const { connectMySQL } = require("./config/mysql");
+const connectMongoDB = require("./config/mongo");
 
-const server = new ApolloServer({ typeDefs, resolvers });
+// Import schema & resolvers của GraphQL
+const typeDefs = require("./graphql/schema");
+const resolvers = require("./graphql/resolvers");
 
-server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
-  console.log(`🚀 Apollo Server ready at ${url}`);
-});
+const startServer = async () => {
+  try {
+    console.log("🔍 Checking ENV Variables:", process.env.PORT);
+
+    // Kết nối database
+    await connectMySQL();
+    await connectMongoDB();
+
+    // Khởi tạo server Express
+    const app = express();
+    const server = new ApolloServer({ typeDefs, resolvers });
+
+    await server.start();
+    server.applyMiddleware({ app });
+
+    const PORT = process.env.PORT || 4000;
+    app.listen(PORT, () => {
+      console.log(
+        `🚀 Server is running on http://localhost:${PORT}${server.graphqlPath}`
+      );
+    });
+  } catch (error) {
+    console.error("❌ Error starting server:", error);
+  }
+};
+
+startServer();
