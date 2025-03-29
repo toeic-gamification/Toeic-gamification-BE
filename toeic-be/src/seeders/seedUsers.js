@@ -1,6 +1,6 @@
 const { sequelize } = require("../config/mysql");
-const Role = require("../models/Role");
-const User = require("../models/User");
+const Role = require("../models/mysql/Role");
+const User = require("../models/mysql/User");
 
 const seedUsers = async () => {
   await sequelize.sync({ force: true }); // Xóa và tạo lại bảng
@@ -17,24 +17,24 @@ const seedUsers = async () => {
   // ✅ Seed Users
   const users = [
     {
-      name: "Admin",
-      email: "admin@example.com",
-      phone: "0123456789",
+      name: "Lê Trang",
+      email: "lt25121999@gmail.com",
+      phone: "0777478157",
       username: "trang99",
       password: "123456",
       roleId: roleInstances["admin"][0].id,
     },
     {
-      name: "Teacher",
-      email: "teacher@example.com",
+      name: "Lê Trang",
+      email: "TrangTeacher@gmail.com",
       phone: "0987654321",
       username: "trang123",
       password: "123456",
       roleId: roleInstances["teacher"][0].id,
     },
     {
-      name: "Student",
-      email: "student@example.com",
+      name: "Lê Trang",
+      email: "letrang@gmail.com",
       phone: "0912345678",
       username: "trang1234",
       password: "123456",

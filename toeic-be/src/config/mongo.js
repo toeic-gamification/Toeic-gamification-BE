@@ -1,16 +1,26 @@
 const mongoose = require("mongoose");
-require("dotenv").config();
+const { mongo } = require("./config");
 
 const connectMongoDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(mongo.uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log("Kết nối mongo thành công!");
+
+    console.log("MongoDB connected successfully!");
+
+    // Kiểm tra nếu DB trống thì có thể seed dữ liệu mẫu
+    const collections = await mongoose.connection.db
+      .listCollections()
+      .toArray();
+    if (collections.length === 0) {
+      console.log("Database is empty, consider seeding initial data.");
+    }
   } catch (error) {
-    console.error("Kết nối thất bại:", error);
+    console.error("MongoDB connection error:", error);
     process.exit(1);
   }
 };
+
 module.exports = connectMongoDB;

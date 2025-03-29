@@ -1,5 +1,5 @@
 const { sequelize } = require("../config/mysql");
-const Role = require("../models/Role");
+const Role = require("../models/mysql/Role");
 
 const seedRoles = async () => {
   await sequelize.sync(); // Đảm bảo bảng tồn tại

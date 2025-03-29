@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { getAllUsers } = require("../controllers/adminController");
-const { verifyAdmin } = require("../middlewares/authMiddleware");
+const {
+  authMiddleware,
+  verifyAdmin,
+} = require("../middlewares/authMiddleware"); // Đúng cách
 
-router.get("/users", verifyAdmin, getAllUsers);
+router.get("/users", authMiddleware, verifyAdmin, getAllUsers);
 
 module.exports = router;
